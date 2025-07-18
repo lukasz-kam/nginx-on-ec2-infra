@@ -27,3 +27,9 @@ variable "vpc_name" {
   type        = string
   default     = "custom-vpc1"
 }
+
+variable "instance_type" {
+  description = "Instance type for the EC2."
+  type        = string
+  default     = "t2.micro"
+}
