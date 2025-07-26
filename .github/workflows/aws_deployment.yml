@@ -2,10 +2,10 @@ name: Terraform AWS deployment
 on:
   push:
     branches:
-      - feature/ci-workflow
+      - main
   pull_request:
     branches:
-      - feature/ci-workflow
+      - main
 
 env:
   TF_VAR_aws_region: eu-central-1
@@ -52,5 +52,5 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/feature/ci-workflow' && github.event_name == 'push' && steps.plan.outcome == 'success'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && steps.plan.outcome == 'success'
         run: terraform apply -auto-approve plan.tfplan
