@@ -12,11 +12,9 @@ terraform {
     region       = "eu-central-1"
     encrypt      = true
     use_lockfile = true
-    profile      = "terraform-user"
   }
 }
 
 provider "aws" {
   region  = var.aws_region
-  profile = var.aws_profile
 }

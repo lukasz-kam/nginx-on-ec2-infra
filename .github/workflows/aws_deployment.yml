@@ -51,12 +51,6 @@ jobs:
         run: terraform plan -no-color -out=plan.tfplan
         continue-on-error: true
 
-      - name: Show Terraform Plan Output
-        if: steps.plan.outcome == 'success' || steps.plan.outcome == 'failure'
-        run: |
-          echo "Terraform Plan Output:"
-          cat tfplan
-
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && steps.plan.outcome == 'success'
+        if: github.ref == 'refs/heads/feature/ci-workflow' && github.event_name == 'push' && steps.plan.outcome == 'success'
         run: terraform apply -auto-approve plan.tfplan
