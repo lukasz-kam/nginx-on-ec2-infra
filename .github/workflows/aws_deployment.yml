@@ -22,13 +22,11 @@ jobs:
       - name: Add GitLab to known_hosts
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.GITLAB_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
+          ssh-keyscan git.epam.com >> ~/.ssh/known_hosts
+          ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
-
-      - name: Setup SSH key for GitLab
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
+          eval $(ssh-agent)
+          ssh-add - <<< "${{ secrets.GITLAB_SSH_PRIVATE_KEY }}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
