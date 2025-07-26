@@ -9,12 +9,6 @@ variable "aws_region" {
   }
 }
 
-variable "aws_profile" {
-  description = "AWS profile name from the ~/.aws/credentials for authentication."
-  type        = string
-  default     = "terraform-user"
-}
-
 variable "subnet_az" {
   description = "AZ for the public subnet"
   type        = string
