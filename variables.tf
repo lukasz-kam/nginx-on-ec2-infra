@@ -74,3 +74,14 @@ variable "www_record_ttl" {
     error_message = "The www_record_ttl must be a positive integer between 60 and 86400 seconds."
   }
 }
+
+variable "terraform_role_arn" {
+  description = "ARN of the terraform role to assume."
+  type        = string
+  default     = "arn:aws:iam::038462790533:role/TerraformRole"
+
+  validation {
+    condition     = can(regex("^arn:aws:iam::\\d{12}:role/[a-zA-Z0-9+=,.@_-]{1,64}$", var.terraform_role_arn))
+    error_message = "The 'terraform_role_arn' variable must be a valid AWS IAM Role ARN, e.g., 'arn:aws:iam::123456789012:role/MyRole'."
+  }
+}
