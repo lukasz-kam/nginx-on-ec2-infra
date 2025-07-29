@@ -13,3 +13,5 @@ sleep 10
 echo "***JENKINS PASSWORD START***"
 cat /var/lib/jenkins/secrets/initialAdminPassword
 echo "***JENKINS PASSWORD END***"
+
+sudo yum install git -y
