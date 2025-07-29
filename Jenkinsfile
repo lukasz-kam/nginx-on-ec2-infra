@@ -70,7 +70,7 @@ pipeline {
 
         stage('Terraform Apply') {
             when {
-                expression { env.BRANCH_NAME == 'main' }
+                expression { env.GIT_BRANCH == 'origin/main' }
             }
             steps {
                 script {
@@ -81,17 +81,6 @@ pipeline {
                     }
                 }
             }
-        }
-    }
-    post {
-        always {
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline completed!'
-        }
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
