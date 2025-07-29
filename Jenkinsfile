@@ -68,7 +68,7 @@ pipeline {
             }
         }
 
-        stage('Terraform Apply Confirmation') {
+        stage('Terraform Apply') {
             when {
                 expression { env.BRANCH_NAME == 'main' }
             }
