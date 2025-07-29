@@ -76,15 +76,22 @@ pipeline {
                 script {
                     withCredentials([aws(credentialsId: 'jenkins-aws-credentials')]) {
                         dir(env.TERRAFORM_WORKING_DIR) {
-                            input {
-                                message "Proceed with Terraform Apply for '${env.BRANCH_NAME}'?"
-                                ok "Yes, apply changes"
-                            }
                             sh 'terraform apply -auto-approve tfplan'
                         }
                     }
                 }
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Pipeline completed!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
