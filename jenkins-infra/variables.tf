@@ -97,3 +97,14 @@ variable "allowed_cidr" {
   }
 }
 
+variable "key_pair_name" {
+  description = "SSH key pair name."
+  type        = string
+  default     = "jenkins-master-key"
+}
+
+variable "key_file_name" {
+  description = "Name of the key pair file."
+  type        = string
+  default     = "jenkins-ssh-key.pem"
+}
