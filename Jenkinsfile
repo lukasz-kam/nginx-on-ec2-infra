@@ -70,7 +70,7 @@ pipeline {
 
         stage('Terraform Apply Confirmation') {
             when {
-                expression { env.BRANCH_NAME == 'feature/jenkins-pipeline' }
+                expression { env.BRANCH_NAME == 'main' }
             }
             steps {
                 script {
