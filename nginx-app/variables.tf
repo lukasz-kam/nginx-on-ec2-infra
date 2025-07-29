@@ -96,3 +96,9 @@ variable "terraform_role_arn" {
     error_message = "The 'terraform_role_arn' variable must be a valid AWS IAM Role ARN, e.g., 'arn:aws:iam::123456789012:role/MyRole'."
   }
 }
+
+variable "aws_profile" {
+  description = "AWS profile name from the ~/.aws/credentials for authentication."
+  type        = string
+  default     = "terraform-user"
+}
