@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'hashicorp/terraform:latest'
-            args '--entrypoint=""'
+            args '-u root --entrypoint=""'
             label 'terraform-docker'
         }
     }
@@ -25,8 +25,14 @@ pipeline {
             steps {
                 script {
                     withCredentials([aws(credentialsId: 'jenkins-aws-credentials')]) {
-                        dir(env.TERRAFORM_WORKING_DIR) {
-                            sh 'terraform init -input=false'
+                        sshagent(credentials: ['gitlab-ssh-key']) {
+                            sh 'mkdir -p /root/.ssh'
+                            sh 'chmod 700 /root/.ssh'
+                            sh 'ssh-keyscan git.epam.com >> /root/.ssh/known_hosts'
+                            sh 'chmod 600 /root/.ssh/known_hosts'
+                            dir(env.TERRAFORM_WORKING_DIR) {
+                                sh 'terraform init -input=false'
+                            }
                         }
                     }
                 }
