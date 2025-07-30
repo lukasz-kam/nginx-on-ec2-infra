@@ -114,11 +114,11 @@ resource "aws_lb_listener_rule" "jenkins_rule" {
     }
   }
 
-  condition {
-    source_ip {
-      values = [var.allowed_cidr]
-    }
-  }
+  # condition {
+  #   source_ip {
+  #     values = [var.allowed_cidr]
+  #   }
+  # }
 
   tags = {
     Name      = "JenkinsAlbRule"
