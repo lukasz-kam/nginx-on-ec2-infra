@@ -1,0 +1,50 @@
+node('terraform') {
+    def terraformWorkingDir = 'nginx-app'
+    def awsCredentials = 'jenkins-aws-credentials'
+    def branchName = scm.branches.first().getExpandedName(env.getEnvironment())
+
+    stage('Terraform Init') {
+        withCredentials([aws(credentialsId: awsCredentials)]) {
+            sshagent(credentials: ['gitlab-ssh-key']) {
+                sh '''
+                    mkdir -p /home/jenkins/.ssh
+                    chmod 700 /home/jenkins/.ssh
+                    ssh-keyscan git.epam.com >> /home/jenkins/.ssh/known_hosts
+                    chmod 600 /home/jenkins/.ssh/known_hosts
+                '''
+                dir(terraformWorkingDir) {
+                    sh 'terraform init -input=false'
+                }
+            }
+        }
+    }
+
+    stage('Terraform Validate') {
+        withCredentials([aws(credentialsId: awsCredentials)]) {
+            dir(terraformWorkingDir) {
+                sh 'terraform validate'
+            }
+        }
+    }
+
+    stage('Terraform Plan') {
+        withCredentials([aws(credentialsId: awsCredentials)]) {
+            dir(terraformWorkingDir) {
+                sh 'terraform plan -no-color -out=tfplan'
+            }
+        }
+        archiveArtifacts artifacts: "${terraformWorkingDir}/tfplan", fingerprint: true, allowEmptyArchive: true
+    }
+
+    stage('Terraform Apply') {
+        if (branchName == '*/main') {
+            withCredentials([aws(credentialsId: env.AWS_CREDENTIALS)]) {
+                dir(env.TERRAFORM_WORKING_DIR) {
+                    sh 'terraform apply -auto-approve tfplan'
+                }
+            }
+        } else {
+            echo "Terraform apply omitted - current branch is ${branchName}"
+        }
+    }
+}

@@ -18,6 +18,11 @@ output "private_subnet_id" {
   value       = aws_subnet.private_a.id
 }
 
+output "public_subnet_a_id" {
+  description = "Private subnet id."
+  value       = aws_subnet.public_a.id
+}
+
 output "alb_name" {
   description = "ALB name."
   value       = aws_lb.app_lb.name

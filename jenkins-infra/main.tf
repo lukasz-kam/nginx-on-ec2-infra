@@ -56,7 +56,7 @@ resource "aws_security_group" "jenkins_sg" {
 resource "aws_instance" "jenkins_server" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
-  subnet_id              = data.terraform_remote_state.nginx_app_state.outputs.private_subnet_id
+  subnet_id              = data.terraform_remote_state.nginx_app_state.outputs.public_subnet_a_id
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
   user_data = file("${path.module}/scripts/jenkins-install.sh")

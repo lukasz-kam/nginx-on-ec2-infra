@@ -10,6 +10,7 @@ pipeline {
     environment {
         AWS_REGION            = 'eu-central-1'
         TERRAFORM_WORKING_DIR = 'nginx-app'
+        AWS_CREDENTIALS       = 'jenkins-aws-credentials'
     }
 
     stages {
@@ -24,7 +25,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 script {
-                    withCredentials([aws(credentialsId: 'jenkins-aws-credentials')]) {
+                    withCredentials([aws(credentialsId: env.AWS_CREDENTIALS)]) {
                         sshagent(credentials: ['gitlab-ssh-key']) {
                             sh 'mkdir -p /root/.ssh'
                             sh 'chmod 700 /root/.ssh'
@@ -42,7 +43,7 @@ pipeline {
         stage('Terraform Validate') {
             steps {
                 script {
-                    withCredentials([aws(credentialsId: 'jenkins-aws-credentials')]) {
+                    withCredentials([aws(credentialsId: env.AWS_CREDENTIALS)]) {
                         dir(env.TERRAFORM_WORKING_DIR) {
                             sh 'terraform validate'
                         }
@@ -54,7 +55,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    withCredentials([aws(credentialsId: 'jenkins-aws-credentials')]) {
+                    withCredentials([aws(credentialsId: env.AWS_CREDENTIALS)]) {
                         dir(env.TERRAFORM_WORKING_DIR) {
                             sh 'terraform plan -no-color -out=tfplan'
                         }
@@ -63,7 +64,8 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: "${env.TERRAFORM_WORKING_DIR}/tfplan", fingerprint: true, allowEmptyArchive: true
+                    archiveArtifacts artifacts: "${env.TERRAFORM_WORKING_DIR}/tfplan", fingerprint: true, \
+                        allowEmptyArchive: true
                 }
             }
         }
@@ -74,7 +76,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([aws(credentialsId: 'jenkins-aws-credentials')]) {
+                    withCredentials([aws(credentialsId: env.AWS_CREDENTIALS)]) {
                         dir(env.TERRAFORM_WORKING_DIR) {
                             sh 'terraform apply -auto-approve tfplan'
                         }
