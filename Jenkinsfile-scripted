@@ -1,7 +1,7 @@
 node('terraform') {
     def terraformWorkingDir = 'nginx-app'
-    def awsCredentials = 'jenkins-aws-credentials'
-    def branchName = scm.branches.first().getExpandedName(env.environment)
+    def awsCredentials      = 'jenkins-aws-credentials'
+    def branchName          = scm.branches.first().getExpandedName(env.getEnvironment())
 
     stage('Terraform Init') {
         withCredentials([aws(credentialsId: awsCredentials)]) {

@@ -1,0 +1,33 @@
+services:
+  jenkins-master:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-master
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    networks:
+      - jenkins-net
+    volumes:
+      - jenkins_home:/var/jenkins_home
+
+  jenkins-agent:
+    image: jenkins-ag1                           ### Name of the Jenkins worker image
+    container_name: jenkins-agent
+    depends_on:
+      - jenkins-master
+    environment:
+      - JENKINS_URL=http://jenkins-master:8080
+      - JENKINS_AGENT_NAME=agent-1               ### Name of the agent from Jenkins master
+      - JENKINS_SECRET=XXXXXX                    ### Secret from the Jenkins master
+    networks:
+      - jenkins-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins_home:/home/jenkins
+
+networks:
+  jenkins-net:
+    driver: bridge
+
+volumes:
+  jenkins_home:
