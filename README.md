@@ -1,27 +1,37 @@
-# Nginx on EC2 infrastructure
+# 🌐 Nginx Web Server on AWS with CI/CD & Jenkins
 
-Repo consists of 2 parts: `jenkins-infra` and `nginx-app`.
+This project provisions a complete **AWS infrastructure** using **Terraform** and deploys a simple static website served by **Nginx** on an **EC2 instance**.
+The infrastructure is fully automated via **GitHub Actions CI/CD**. The repository also includes a setup for **Jenkins** (both on EC2 and Docker).
 
-`Jenkins-infra` is a terraform configuration used to manually create:
--  an EC2 instance for Jenkins master server
--  DNS A record that routes the traffic through ALB to the EC2 instance
--  SG that restricts access only from ALB to the EC2 instance
--  SG for Jenkins agents created by Jenkins master EC2 plugin
+---
 
-Jenkins-infra uses ‘terraform_remote_state’ to get the data needed to configure the
-server with ALB from nginx-app.
+## 📐 Architecture
 
+- **Route53**: DNS record pointing to an Application Load Balancer (ALB)
+- **ALB (Application Load Balancer)**: Distributes traffic to EC2 instances
+- **EC2 instance**: Runs Nginx serving a static website
+- **S3 bucket**: Stores static content for the website
+- **Networking**: VPC, subnets, NAT Gateway, route tables, security groups
 
+👉 The flow:
+`Route53 DNS → ALB → EC2 (Nginx) → Static website`
 
-`Nginx-app` is terraform configuration that should be used only with
-CI/CD tools - Github Actions or Jenkins. The terraform is configured to create:
-- VPC with 2 public and 1 private subnets
-- Internet Gateway and NAT Gateway
-- SG and Routes necessary for controlling traffic in VPC
-- ALB for directing traffic to Nginx and Jenkins servers
-- Route53 hosted zone and DNS A record for the Nginx server
+---
 
-Nginx-app contains a github workflow file and a Jenkinsfile that automatically creates the infrastructure on push or pull request to the main branch.
+## 🛠️ Tech Stack
 
-<b>
-The version of Terraform used for this repository is v1.12.2.
+- **Terraform**
+  - AWS resources: ALB, EC2, S3, Route53, Networking components
+- **CI/CD**
+  - GitHub Actions workflow
+- **Jenkins**
+  - Terraform configuration to provision a Jenkins server on EC2
+  - Docker & Docker Compose setup for Jenkins Master and Agents
+  - Three Jenkins pipelines:
+    - Declarative pipeline (`Jenkinsfile`)
+    - Scripted pipeline (`Jenkinsfile-scripted`)
+    - Scripted pipeline with Docker agents (`Jenkinsfile-docker`)
+- **Docker**
+
+---
+
